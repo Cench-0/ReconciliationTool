@@ -1,100 +1,430 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Reconciliation Tool - Centrine</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    .matched { background-color: #e7fbe7; }
-    .internal-only { background-color: #fff3cd; }
-    .provider-only { background-color: #f8d7da; }
-    .download-btn { margin: 10px 5px; }
+    :root {
+      --centrine-primary: #2563eb;
+      --centrine-success: #059669;
+      --centrine-warning: #d97706;
+      --centrine-danger: #dc2626;
+      --centrine-light: #f8fafc;
+      --centrine-dark: #1e293b;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .main-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      margin: 2rem auto;
+      overflow: hidden;
+    }
+
+    .sticky-header {
+      background: linear-gradient(135deg, var(--centrine-primary), #3b82f6);
+      color: white;
+      padding: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-subtitle {
+      opacity: 0.9;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .content-section {
+      padding: 2rem;
+    }
+
+    .upload-section {
+      background: var(--centrine-light);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 2px dashed #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .upload-section:hover {
+      border-color: var(--centrine-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+    }
+
+    .custom-file-input {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .custom-file-input:focus {
+      border-color: var(--centrine-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--centrine-primary), #3b82f6);
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .results-section {
+      margin-top: 2rem;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0 1rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .matched-header {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: var(--centrine-success);
+    }
+
+    .internal-only-header {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: var(--centrine-warning);
+    }
+
+    .provider-only-header {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: var(--centrine-danger);
+    }
+
+    .category-icon {
+      font-size: 1.5rem;
+    }
+
+    .count-badge {
+      background: rgba(255, 255, 255, 0.9);
+      color: inherit;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .download-buttons {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-download {
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-success-custom {
+      background: linear-gradient(135deg, var(--centrine-success), #10b981);
+      color: white;
+    }
+
+    .btn-warning-custom {
+      background: linear-gradient(135deg, var(--centrine-warning), #f59e0b);
+      color: white;
+    }
+
+    .btn-danger-custom {
+      background: linear-gradient(135deg, var(--centrine-danger), #ef4444);
+      color: white;
+    }
+
+    .custom-table {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .custom-table thead th {
+      background: var(--centrine-dark);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.85rem;
+      padding: 1rem 0.75rem;
+      border: none;
+    }
+
+    .custom-table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .custom-table tbody tr:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      position: relative;
+    }
+
+    .custom-table tbody td {
+      padding: 1rem 0.75rem;
+      vertical-align: middle;
+      border-color: #f1f5f9;
+    }
+
+    .matched tbody tr:hover {
+      background: #f0fdf4;
+    }
+
+    .internal-only tbody tr:hover {
+      background: #fffbeb;
+    }
+
+    .provider-only tbody tr:hover {
+      background: #fef2f2;
+    }
+
+    .footer {
+      background: var(--centrine-dark);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-text {
+      margin: 0;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .footer-heart {
+      color: #ef4444;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #64748b;
+      font-style: italic;
+      padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 1rem;
+        border-radius: 12px;
+      }
+      
+      .header-title {
+        font-size: 2rem;
+      }
+      
+      .content-section {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container py-4">
-    <h2 class="mb-4">🧾 Mini Reconciliation Tool by Centrine</h2>
-
-    <form action="/upload" method="POST" enctype="multipart/form-data" class="mb-4">
-      <div class="mb-3">
-        <label class="form-label">Internal System CSV:</label>
-        <input class="form-control" type="file" name="internal_file" required />
+  <div class="container-fluid">
+    <div class="main-container">
+      <div class="sticky-header">
+        <h1 class="header-title">
+          <i class="fas fa-calculator me-3"></i>
+          Reconciliation Tool
+        </h1>
+        <p class="header-subtitle">Powered by Centrine - Compare and analyze your transaction data</p>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Provider Statement CSV:</label>
-        <input class="form-control" type="file" name="provider_file" required />
+
+      <div class="content-section">
+        <div class="upload-section">
+          <form action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">
+                  <i class="fas fa-database me-2 text-primary"></i>
+                  Internal System CSV
+                </label>
+                <input class="form-control custom-file-input" type="file" name="internal_file" accept=".csv" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">
+                  <i class="fas fa-file-alt me-2 text-info"></i>
+                  Provider Statement CSV
+                </label>
+                <input class="form-control custom-file-input" type="file" name="provider_file" accept=".csv" required />
+              </div>
+            </div>
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary-custom btn-lg">
+                <i class="fas fa-sync-alt me-2"></i>
+                Compare Transactions
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="results-section">
+          {% if matched %}
+            <div class="category-header matched-header">
+              <i class="fas fa-check-circle category-icon"></i>
+              <h4 class="mb-0">Matched Transactions</h4>
+              <span class="count-badge">{{ matched|length }}</span>
+            </div>
+            <div class="download-buttons">
+              <a class="btn btn-success-custom btn-download" href="/download/matched">
+                <i class="fas fa-download me-2"></i>Download Matched CSV
+              </a>
+            </div>
+            <div class="table-responsive">
+              <table class="table custom-table matched">
+                <thead>
+                  <tr>
+                    {% for key in matched[0].keys() %}
+                      <th>{{ key|title }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in matched %}
+                    <tr>
+                      {% for val in row.values() %}
+                        <td>{{ val }}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+
+          {% if internal_only %}
+            <div class="category-header internal-only-header">
+              <i class="fas fa-exclamation-triangle category-icon"></i>
+              <h4 class="mb-0">Present Only in Internal</h4>
+              <span class="count-badge">{{ internal_only|length }}</span>
+            </div>
+            <div class="download-buttons">
+              <a class="btn btn-warning-custom btn-download" href="/download/internal">
+                <i class="fas fa-download me-2"></i>Download Internal Only CSV
+              </a>
+            </div>
+            <div class="table-responsive">
+              <table class="table custom-table internal-only">
+                <thead>
+                  <tr>
+                    {% for key in internal_only[0].keys() %}
+                      <th>{{ key|title }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in internal_only %}
+                    <tr>
+                      {% for val in row.values() %}
+                        <td>{{ val }}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+
+          {% if provider_only %}
+            <div class="category-header provider-only-header">
+              <i class="fas fa-times-circle category-icon"></i>
+              <h4 class="mb-0">Present Only in Provider</h4>
+              <span class="count-badge">{{ provider_only|length }}</span>
+            </div>
+            <div class="download-buttons">
+              <a class="btn btn-danger-custom btn-download" href="/download/provider">
+                <i class="fas fa-download me-2"></i>Download Provider Only CSV
+              </a>
+            </div>
+            <div class="table-responsive">
+              <table class="table custom-table provider-only">
+                <thead>
+                  <tr>
+                    {% for key in provider_only[0].keys() %}
+                      <th>{{ key|title }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in provider_only %}
+                    <tr>
+                      {% for val in row.values() %}
+                        <td>{{ val }}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+
+          {% if not matched and not internal_only and not provider_only %}
+            <div class="empty-state">
+              <i class="fas fa-upload fa-3x mb-3 text-muted"></i>
+              <p>Upload your CSV files to start comparing transactions</p>
+            </div>
+          {% endif %}
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Compare Transactions</button>
-    </form>
 
-    {% if matched %}
-      <h4>✅ Matched Transactions ({{ matched|length }})</h4>
-      <a class="btn btn-success download-btn" href="/download/matched">Download Matched CSV</a>
-      <table class="table table-bordered matched">
-        <thead>
-          <tr>
-            {% for key in matched[0].keys() %}
-              <th>{{ key }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in matched %}
-            <tr>
-              {% for val in row.values() %}
-                <td>{{ val }}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
-
-    {% if internal_only %}
-      <h4>⚠️ Present Only in Internal ({{ internal_only|length }})</h4>
-      <a class="btn btn-warning download-btn" href="/download/internal">Download Internal Only CSV</a>
-      <table class="table table-bordered internal-only">
-        <thead>
-          <tr>
-            {% for key in internal_only[0].keys() %}
-              <th>{{ key }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in internal_only %}
-            <tr>
-              {% for val in row.values() %}
-                <td>{{ val }}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
-
-    {% if provider_only %}
-      <h4>❌ Present Only in Provider ({{ provider_only|length }})</h4>
-      <a class="btn btn-danger download-btn" href="/download/provider">Download Provider Only CSV</a>
-      <table class="table table-bordered provider-only">
-        <thead>
-          <tr>
-            {% for key in provider_only[0].keys() %}
-              <th>{{ key }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in provider_only %}
-            <tr>
-              {% for val in row.values() %}
-                <td>{{ val }}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
+      <div class="footer">
+        <p class="footer-text">
+          Built with <i class="fas fa-heart footer-heart"></i> by <strong>Centrine</strong>
+        </p>
+      </div>
+    </div>
   </div>
 </body>
 </html>
