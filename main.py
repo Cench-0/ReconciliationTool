@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect
 import os, csv
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
@@ -53,7 +53,22 @@ def upload_files():
     save_to_csv('internal_only.csv', internal_only)
     save_to_csv('provider_only.csv', provider_only)
 
-    return render_template("index.html", matched=matched, internal_only=internal_only, provider_only=provider_only)
+    # Store results in session or temporarily for redirect
+    app.config['RESULTS'] = {
+        'matched': matched,
+        'internal_only': internal_only,
+        'provider_only': provider_only
+    }
+    
+    return redirect('/results')
+
+@app.route('/results')
+def show_results():
+    results = app.config.get('RESULTS', {})
+    return render_template("results.html", 
+                         matched=results.get('matched', []), 
+                         internal_only=results.get('internal_only', []), 
+                         provider_only=results.get('provider_only', []))
 
 @app.route('/download/<category>')
 def download_csv(category):
