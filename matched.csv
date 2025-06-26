@@ -1,3 +1,4 @@
-transaction_reference,amount,status
-TX001,1000,success
-TX003,1500,success
+amount,provider_amount,provider_status,status,transaction_reference
+1000,,,success,TX001
+1500,,,success,TX003
+900,950,pending,pending,TX004
