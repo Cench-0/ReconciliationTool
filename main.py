@@ -69,8 +69,14 @@ def download_csv(category):
 def save_to_csv(filename, data):
     if not data:
         return
+    
+    # Collect all possible fieldnames from all rows
+    all_fieldnames = set()
+    for row in data:
+        all_fieldnames.update(row.keys())
+    
     with open(filename, 'w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=data[0].keys())
+        writer = csv.DictWriter(f, fieldnames=sorted(all_fieldnames))
         writer.writeheader()
         writer.writerows(data)
 
