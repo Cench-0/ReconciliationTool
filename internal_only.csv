@@ -1,2 +1,2 @@
-amount,status,transaction_reference
-2000,failed,TX002
+amount,currency,method,status,transaction_reference
+2000,KES,card,failed,TX202

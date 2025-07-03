@@ -1,2 +1,2 @@
-amount,status,transaction_reference
-500,success,TX005
+amount,currency,method,status,transaction_reference
+7000,KES,card,success,TX206

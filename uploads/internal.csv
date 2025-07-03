@@ -1,5 +1,6 @@
-transaction_reference,amount,status
-TX001,1000,success
-TX002,2000,failed
-TX003,1500,success
-TX004,900,pending
+transaction_reference,amount,status,currency,method
+TX201,1000,success,KES,mpesa
+TX202,2000,failed,KES,card
+TX203,3000,success,USD,bank
+TX204,4000,pending,NGN,ussd
+TX205,5000,success,KES,mpesa

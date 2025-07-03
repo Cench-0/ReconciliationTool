@@ -1,4 +1,5 @@
-amount,provider_amount,provider_status,status,transaction_reference
-1000,,,success,TX001
-1500,,,success,TX003
-900,950,pending,pending,TX004
+amount,currency,method,provider_amount,provider_status,status,transaction_reference
+1000,KES,mpesa,,,success,TX201
+3000,USD,bank,,,success,TX203
+4000,NGN,ussd,3950,pending,pending,TX204
+5000,KES,mpesa,,,success,TX205
